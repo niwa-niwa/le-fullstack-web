@@ -1,8 +1,8 @@
 import Head from "next/head";
-import Image from "next/image";
 import styles from "../styles/Home.module.css";
 import axios from "axios";
 import { useEffect, useState } from "react";
+import Navigation from "../components/Navigation";
 
 export default function Home() {
   const [listOfPosts, setListOfPosts] = useState([]);
@@ -10,9 +10,6 @@ export default function Home() {
     axios.get("http://localhost:3001/posts").then((response) => {
       setListOfPosts(response.data);
     });
-    return () => {
-      cleanup;
-    };
   }, []);
   return (
     <div className={styles.container}>
@@ -22,6 +19,7 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <div className="App">
+        <Navigation />
         {listOfPosts.map((value, key) => {
           return (
             <div className="post" key={value.id}>
