@@ -2,8 +2,11 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import axios from "axios";
 import Navigation from "../components/Navigation";
+import router, { useRouter } from "next/router";
 
 export default function CreatePost() {
+  const router = useRouter();
+
   const initialValues = {
     title: "",
     postText: "",
@@ -17,9 +20,14 @@ export default function CreatePost() {
   });
 
   const onSubmit = (data) => {
-    axios.post("http://localhost:3001/posts", data).then((response) => {
-      console.log("post is Worked", response.data);
-    });
+    axios
+      .post("http://localhost:3001/posts", data)
+      .then((response) => {
+        console.log("post is Worked", response.data);
+      })
+      .finally(() => {
+        router.push("/");
+      });
   };
 
   return (
