@@ -22,14 +22,26 @@ export default function Post() {
 
   const addComment = () => {
     axios
-      .post("http://localhost:3001/comments", {
-        commentBody: newComment,
-        PostId: id,
-      })
+      .post(
+        "http://localhost:3001/comments",
+        {
+          commentBody: newComment,
+          PostId: id,
+        },
+        {
+          headers: {
+            accessToken: sessionStorage.getItem("accessToken"),
+          },
+        }
+      )
       .then((response) => {
-        setComments([...comments, { commentBody: newComment }]);
-        console.log("Comment added!");
-        setNewComment("");
+        if (response.data.error) {
+          alert(response.data.error);
+        } else {
+          const commentToAdd = { commentBody: newComment };
+          setComments([...comments, { commentBody: newComment }]);
+          setNewComment("");
+        }
       });
   };
 
