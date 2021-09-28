@@ -9,7 +9,7 @@ export default function Navigation() {
       <Link href="/createpost">
         <a>create</a>
       </Link>
-      {!sessionStorage.getItem("accessToken") && (
+      {!localStorage.getItem("accessToken") && (
         <>
           <Link href="/login">
             <a>Login</a>
