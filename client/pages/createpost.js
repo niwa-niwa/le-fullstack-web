@@ -1,8 +1,8 @@
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import axios from "axios";
-import Navigation from "../components/Navigation";
-import router, { useRouter } from "next/router";
+import { useRouter } from "next/router";
+import Layout from "../components/Layout";
 
 export default function CreatePost() {
   const router = useRouter();
@@ -31,8 +31,7 @@ export default function CreatePost() {
   };
 
   return (
-    <>
-      <Navigation />
+    <Layout>
       <div className="createPostPage">
         <Formik
           initialValues={initialValues}
@@ -68,6 +67,6 @@ export default function CreatePost() {
           </Form>
         </Formik>
       </div>
-    </>
+    </Layout>
   );
 }

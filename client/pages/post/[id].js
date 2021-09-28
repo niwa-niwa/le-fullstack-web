@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import axios from "axios";
-import Navigation from "../../components/Navigation";
+import Layout from "../../components/Layout";
 
 export default function Post() {
   const router = useRouter();
@@ -49,8 +49,7 @@ export default function Post() {
   };
 
   return (
-    <>
-      <Navigation />
+    <Layout>
       <div className="postPage">
         <div className="leftSide">
           <div className="post" id="individual">
@@ -86,6 +85,6 @@ export default function Post() {
           </div>
         </div>
       </div>
-    </>
+    </Layout>
   );
 }
