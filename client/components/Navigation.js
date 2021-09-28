@@ -1,6 +1,9 @@
 import Link from "next/link";
+import { useAuthContext } from "../helpers/AuthContext";
 
 export default function Navigation() {
+  const { authState } = useAuthContext();
+
   return (
     <div className="navbar">
       <Link href="/">
@@ -9,7 +12,7 @@ export default function Navigation() {
       <Link href="/createpost">
         <a>create</a>
       </Link>
-      {!localStorage.getItem("accessToken") && (
+      {!authState && (
         <>
           <Link href="/login">
             <a>Login</a>

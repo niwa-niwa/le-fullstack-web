@@ -2,11 +2,13 @@ import { useState } from "react";
 import axios from "axios";
 import { useRouter } from "next/router";
 import Layout from "../components/Layout";
+import { useAuthContext } from "../helpers/AuthContext";
 
 export default function Login() {
   const router = useRouter();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const { setAuthState } = useAuthContext();
 
   const login = () => {
     const data = { username: username, password: password };
@@ -15,6 +17,7 @@ export default function Login() {
         alert(response.data.error);
       } else {
         localStorage.setItem("accessToken", response.data);
+        setAuthState(true);
         router.push("/");
       }
 
