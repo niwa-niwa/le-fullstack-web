@@ -9,12 +9,16 @@ export default function Navigation() {
       <Link href="/createpost">
         <a>create</a>
       </Link>
-      <Link href="/login">
-        <a>Login</a>
-      </Link>
-      <Link href="/registration">
-        <a>Registration</a>
-      </Link>
+      {!sessionStorage.getItem("accessToken") && (
+        <>
+          <Link href="/login">
+            <a>Login</a>
+          </Link>
+          <Link href="/registration">
+            <a>Registration</a>
+          </Link>
+        </>
+      )}
     </div>
   );
 }

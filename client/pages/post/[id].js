@@ -38,8 +38,11 @@ export default function Post() {
         if (response.data.error) {
           alert(response.data.error);
         } else {
-          const commentToAdd = { commentBody: newComment };
-          setComments([...comments, { commentBody: newComment }]);
+          const commentToAdd = {
+            commentBody: newComment,
+            username: response.data.username,
+          };
+          setComments([...comments, commentToAdd]);
           setNewComment("");
         }
       });
@@ -76,6 +79,7 @@ export default function Post() {
               return (
                 <div key={key} className="comment">
                   {comment.commentBody}
+                  <label htmlFor="">Username: {comment.username}</label>
                 </div>
               );
             })}
