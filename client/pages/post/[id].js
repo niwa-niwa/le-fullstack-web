@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import axios from "axios";
 import Layout from "../../components/Layout";
+import { useAuthContext } from "../../helpers/AuthContext";
 
 export default function Post() {
   const router = useRouter();
@@ -9,6 +10,7 @@ export default function Post() {
   const [postObject, setPostObject] = useState({});
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState("");
+  const { authState } = useAuthContext();
 
   useEffect(() => {
     axios.get(`http://localhost:3001/posts/byId/${id}`).then((response) => {
@@ -48,6 +50,22 @@ export default function Post() {
       });
   };
 
+  const deleteComment = (id) => {
+    axios
+      .delete(`http://localhost:3001/comments/${id}`, {
+        headers: {
+          accessToken: localStorage.getItem("accessToken"),
+        },
+      })
+      .then(() => {
+        setComments(
+          comments.filter((comment) => {
+            return comment.id !== id && comment;
+          })
+        );
+      });
+  };
+
   return (
     <Layout>
       <div className="postPage">
@@ -79,6 +97,15 @@ export default function Post() {
                 <div key={key} className="comment">
                   {comment.commentBody}
                   <label htmlFor="">Username: {comment.username}</label>
+                  {authState.username === comment.username && (
+                    <button
+                      onClick={() => {
+                        deleteComment(comment.id);
+                      }}
+                    >
+                      X
+                    </button>
+                  )}
                 </div>
               );
             })}
