@@ -3,14 +3,25 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import Layout from "../components/Layout";
+import ThumbUpIcon from "@mui/icons-material/ThumbUp";
 
 export default function Home() {
   const [listOfPosts, setListOfPosts] = useState([]);
+  const [likedPosts, setLikedPosts] = useState([]);
 
   useEffect(() => {
-    axios.get("http://localhost:3001/posts").then((response) => {
-      setListOfPosts(response.data);
-    });
+    axios
+      .get("http://localhost:3001/posts", {
+        headers: { accessToken: localStorage.getItem("accessToken") },
+      })
+      .then((response) => {
+        setListOfPosts(response.data.listOfPosts);
+        setLikedPosts(
+          response.data.likedPosts.map((like) => {
+            return like.PostId;
+          })
+        );
+      });
   }, []);
 
   const likeAPost = (PostId) => {
@@ -37,6 +48,16 @@ export default function Home() {
           })
         );
       });
+
+    if (likedPosts.includes(PostId)) {
+      setLikedPosts(
+        likedPosts.filter((id) => {
+          return id != PostId;
+        })
+      );
+    } else {
+      setLikedPosts([...likedPosts, PostId]);
+    }
   };
 
   return (
@@ -55,16 +76,18 @@ export default function Home() {
                 <div className="body">{value.postText}</div>
               </Link>
               <div className="footer">
-                {value.username}{" "}
-                <button
-                  onClick={() => {
-                    likeAPost(value.id);
-                  }}
-                >
-                  {" "}
-                  Like
-                </button>
-                <label htmlFor="">{value.Likes.length}</label>
+                <div className="username">{value.username}</div>
+                <div className="buttons">
+                  <ThumbUpIcon
+                    onClick={() => {
+                      likeAPost(value.id);
+                    }}
+                    className={
+                      likedPosts.includes(value.id) ? "unlikeBttn" : "likeBttn"
+                    }
+                  />
+                  <label htmlFor="">{value.Likes.length}</label>
+                </div>
               </div>
             </div>
           );
