@@ -1,27 +1,35 @@
 import Head from "next/head";
+import { useRouter } from "next/router";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import Layout from "../components/Layout";
 import ThumbUpIcon from "@mui/icons-material/ThumbUp";
+import { useAuthContext } from "../helpers/AuthContext";
 
 export default function Home() {
   const [listOfPosts, setListOfPosts] = useState([]);
   const [likedPosts, setLikedPosts] = useState([]);
+  const router = useRouter();
+  const { authState } = useAuthContext();
 
   useEffect(() => {
-    axios
-      .get("http://localhost:3001/posts", {
-        headers: { accessToken: localStorage.getItem("accessToken") },
-      })
-      .then((response) => {
-        setListOfPosts(response.data.listOfPosts);
-        setLikedPosts(
-          response.data.likedPosts.map((like) => {
-            return like.PostId;
-          })
-        );
-      });
+    if (!authState.status) {
+      router.push("/login");
+    } else {
+      axios
+        .get("http://localhost:3001/posts", {
+          headers: { accessToken: localStorage.getItem("accessToken") },
+        })
+        .then((response) => {
+          setListOfPosts(response.data.listOfPosts);
+          setLikedPosts(
+            response.data.likedPosts.map((like) => {
+              return like.PostId;
+            })
+          );
+        });
+    }
   }, []);
 
   const likeAPost = (PostId) => {
@@ -68,30 +76,36 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Layout>
-        {listOfPosts.map((value, key) => {
-          return (
-            <div className="post" key={value.id}>
-              <div className="title">{value.title}</div>
-              <Link href="post/[id]" as={`/post/${value.id}`}>
-                <div className="body">{value.postText}</div>
-              </Link>
-              <div className="footer">
-                <div className="username">{value.username}</div>
-                <div className="buttons">
-                  <ThumbUpIcon
-                    onClick={() => {
-                      likeAPost(value.id);
-                    }}
-                    className={
-                      likedPosts.includes(value.id) ? "unlikeBttn" : "likeBttn"
-                    }
-                  />
-                  <label htmlFor="">{value.Likes.length}</label>
+        {listOfPosts ? (
+          listOfPosts.map((value, key) => {
+            return (
+              <div className="post" key={value.id}>
+                <div className="title">{value.title}</div>
+                <Link href="post/[id]" as={`/post/${value.id}`}>
+                  <div className="body">{value.postText}</div>
+                </Link>
+                <div className="footer">
+                  <div className="username">{value.username}</div>
+                  <div className="buttons">
+                    <ThumbUpIcon
+                      onClick={() => {
+                        likeAPost(value.id);
+                      }}
+                      className={
+                        likedPosts.includes(value.id)
+                          ? "unlikeBttn"
+                          : "likeBttn"
+                      }
+                    />
+                    <label htmlFor="">{value.Likes.length}</label>
+                  </div>
                 </div>
               </div>
-            </div>
-          );
-        })}
+            );
+          })
+        ) : (
+          <p>表示する投稿はありません。</p>
+        )}
       </Layout>
     </>
   );

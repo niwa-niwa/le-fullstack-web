@@ -1,17 +1,26 @@
+import { useEffect } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import axios from "axios";
 import { useRouter } from "next/router";
 import Layout from "../components/Layout";
+import { useAuthContext } from "../helpers/AuthContext";
 
 export default function CreatePost() {
   const router = useRouter();
+  const { authState } = useAuthContext();
 
   const initialValues = {
     title: "",
     postText: "",
     username: "",
   };
+
+  useEffect(() => {
+    if (!authState.status) {
+      router.push("/login");
+    }
+  });
 
   const validationSchema = Yup.object().shape({
     title: Yup.string().required("You must input a title!"),
