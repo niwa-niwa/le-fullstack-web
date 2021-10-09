@@ -85,7 +85,11 @@ export default function Home() {
                   <div className="body">{value.postText}</div>
                 </Link>
                 <div className="footer">
-                  <div className="username">{value.username}</div>
+                  <div className="username">
+                    <Link href={`/profile/${value.UserId}`}>
+                      {value.username}
+                    </Link>
+                  </div>
                   <div className="buttons">
                     <ThumbUpIcon
                       onClick={() => {
