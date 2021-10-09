@@ -3,12 +3,14 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import axios from "axios";
+import { useAuthContext } from "../../helpers/AuthContext";
 
 export default function Profile() {
   const router = useRouter();
   const { id } = router.query;
   const [username, setUsername] = useState("");
   const [listOfPosts, setListOfPosts] = useState([]);
+  const { authState } = useAuthContext();
 
   useEffect(() => {
     if (id) {
@@ -32,6 +34,11 @@ export default function Profile() {
       <div className="profilePageContainer">
         <div className="basicInfo">
           <h1>Username:{username}</h1>
+          {authState.username === username && (
+            <Link href="/changepassword">
+              <button>Change My Password</button>
+            </Link>
+          )}
         </div>
         <div className="listOfPosts">
           {listOfPosts ? (
